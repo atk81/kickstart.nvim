@@ -17,6 +17,7 @@ return {
     -- Installs the debug adapters for you
     'williamboman/mason.nvim',
     'jay-babu/mason-nvim-dap.nvim',
+    'theHamsta/nvim-dap-virtual-text',
 
     -- Add your own debuggers here
     'leoluz/nvim-dap-go',
@@ -52,6 +53,8 @@ return {
       dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
     end, { desc = 'Debug: Set Breakpoint' })
 
+    vim.keymap.set('n', '<leader>dt', ":lua require'dap-go'.debug_test()<CR>", { desc = "debug test" })
+    vim.keymap.set('n', '<leader>dr', ":lua require'dap'.repl.open()<CR>", { desc = "i really don't know what it does" })
     -- Dap UI setup
     -- For more information, see |:help nvim-dap-ui|
     dapui.setup {
@@ -83,5 +86,6 @@ return {
 
     -- Install golang specific config
     require('dap-go').setup()
+    require('nvim-dap-virtual-text').setup({ commented = true, })
   end,
 }

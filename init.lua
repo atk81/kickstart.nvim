@@ -10,8 +10,7 @@ Kickstart.nvim is a template for your own configuration.
   The goal is that you can read every line of code, top-to-bottom, understand
   what your configuration is doing, and modify it to suit your needs.
 
-  Once you've done that, you should start exploring, configuring and tinkering to
-  explore Neovim!
+  Once you've done that, you should start exploring, configuring and tinkering to explore Neovim!
 
   If you don't know anything about Lua, I recommend taking some time to read through
   a guide. One possible example:
@@ -79,6 +78,13 @@ require('lazy').setup({
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
   {
+    "kdheepak/lazygit.nvim",
+    -- optional for floating window border decoration
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
+  },
+  {
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     dependencies = {
@@ -88,7 +94,10 @@ require('lazy').setup({
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', opts = {} },
+      {
+        'j-hui/fidget.nvim',
+        opts = {}
+      },
 
       -- Additional lua configuration, makes nvim stuff amazing!
       'folke/neodev.nvim',
@@ -113,7 +122,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim', opts = {} },
+  { 'folke/which-key.nvim',  opts = {} },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -188,30 +197,71 @@ require('lazy').setup({
       end,
     },
   },
-
   {
-    -- Theme inspired by Atom
-    'navarasu/onedark.nvim',
+    "catppuccin/nvim",
+    dependencies = {
+      "nvim-tree/nvim-tree.lua",
+    },
     priority = 1000,
-    config = function()
-      vim.cmd.colorscheme 'onedark'
-    end,
-  },
-
-  {
-    -- Set lualine as statusline
-    'nvim-lualine/lualine.nvim',
-    -- See `:help lualine.txt`
+    lazy = true,
+    name = "catppuccin",
+    flavour = "mocha",
+    background = {
+      light = "latte",
+      dark = "mocha",
+    },
+    transparent_background = true,
     opts = {
-      options = {
-        icons_enabled = false,
-        theme = 'onedark',
-        component_separators = '|',
-        section_separators = '',
+      integrations = {
+        aerial = true,
+        alpha = true,
+        cmp = true,
+        dashboard = true,
+        flash = true,
+        gitsigns = true,
+        headlines = true,
+        illuminate = true,
+        indent_blankline = { enabled = true },
+        leap = true,
+        lsp_trouble = true,
+        mason = true,
+        markdown = true,
+        mini = true,
+        native_lsp = {
+          enabled = true,
+          underlines = {
+            errors = { "undercurl" },
+            hints = { "undercurl" },
+            warnings = { "undercurl" },
+            information = { "undercurl" },
+          },
+        },
+        navic = { enabled = true, custom_bg = "lualine" },
+        neotest = true,
+        neotree = true,
+        noice = true,
+        notify = true,
+        semantic_tokens = true,
+        telescope = true,
+        treesitter = true,
+        treesitter_context = true,
+        which_key = true,
+
       },
     },
   },
-
+  {
+    'nvim-tree/nvim-web-devicons',
+    color_icons = true,
+    default = true,
+  },
+  {
+    'Bekaboo/dropbar.nvim',
+    -- optional, but required for fuzzy finder support
+    dependencies = {
+      'nvim-telescope/telescope-fzf-native.nvim'
+    }
+  },
   {
     -- Add indentation guides even on blank lines
     'lukas-reineke/indent-blankline.nvim',
@@ -220,7 +270,6 @@ require('lazy').setup({
     main = 'ibl',
     opts = {},
   },
-
   -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim', opts = {} },
 
@@ -257,8 +306,14 @@ require('lazy').setup({
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
-  -- require 'kickstart.plugins.autoformat',
-  -- require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.autoformat',
+  require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.autopair',
+  require 'kickstart.plugins.nvimTree',
+  require 'kickstart.plugins.numbertoggle',
+  require 'kickstart.plugins.airline',
+  require 'kickstart.plugins.cokeline',
+  --require 'kickstart.plugins.--[[ c ]]olorscheme',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    You can use this folder to prevent any conflicts with this init.lua if you're interested in keeping
@@ -656,6 +711,25 @@ cmp.setup {
     { name = 'path' },
   },
 }
+-- Enable Colorscheme
+vim.cmd.colorscheme 'catppuccin'
+-- Enable transparency of the colorscheme based on terminal transparency
+vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
+vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
 
+-----------------Split Screen ----------------------------------
+-- Split the screen vertically :vs
+-- Split the screen horizonally :sp
+-- Set the right to left so that it will open as accepted
+vim.cmd('set splitbelow')
+vim.cmd('set splitright')
+-- Key mappings for moving between split windows
+vim.api.nvim_set_keymap('n', '<C-h>', '<C-w>h', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-j>', '<C-w>j', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-k>', '<C-w>k', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-l>', '<C-w>l', { noremap = true, silent = true })
+-- -- Key binding to open the terminal
+vim.api.nvim_set_keymap('n', '<leader>tt', ':vs|:term<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>th', ':sp|:term<CR>', { noremap = true, silent = true })
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
